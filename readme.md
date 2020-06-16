@@ -43,9 +43,13 @@ The structure of the results directory `./input_dir/res` should mirror that of t
 where,
 
 P: The number of people tracked in the sequence. If there is just one tracked person, the size should be 1 x N x 24 x 3
+
 N: The number of frames in the sequence.
+
 J = 24 joints of SMPL --> If you do not use SMPL skeleton, you need to convert between formats (note that this is usually relatively straightforward)
+
 K= 9 parts in the following order: root (JOINT 0) , left hip  (JOINT 1), right hip (JOINT 2), left knee (JOINT 4), right knee (JOINT 5), left shoulder (JOINT 16), right shoulder (JOINT 17), left elbow (JOINT 18), right elbow (JOINT 19).
+
 When the number of detected 2D pose keypoints is less than six (indicated as zeros in the 3DPW data), we exclude the frame from evaluation -- you can fill that space with zeros or some other dummy number. No algorithm will be evaluated for those frames. The evaluation protocol also ignores the frames where the camera not been well aligned with the image -- these instances are labelled in valid_camposes array in the 3DPW annotated pkl files.
 
 If you only want to evaluate jointPositions and not orientations, please make sure that your dictionaries ONLY contain the 'jointPositions' key. Similiarly please include ONLY the 'orientations' key in each dictionary if you only want to evaluate orientation.
