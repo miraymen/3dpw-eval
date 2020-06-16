@@ -3,7 +3,7 @@
 This repository contains the evaluation code for the [ECCV 2020 workshop on 3D Pose Estimation in the Wild](https://virtualhumans.mpi-inf.mpg.de/3DPW_Challenge/)
 
 ### Getting Started
-Please download the [3DPW](https://virtualhumans.mpi-inf.mpg.de/3DPW/) and the create a new conda environment using the command 
+Please download the [3DPW dataset](https://virtualhumans.mpi-inf.mpg.de/3DPW/) and the create a new conda environment using the command 
 
 `source ./scripts/install_prep.sh`
 
