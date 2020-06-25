@@ -385,7 +385,9 @@ def get_paths(submit_dir, truth_dir):
         fnames_gt = fnames_gt + fnames_gt_temp
         fnames_pred = fnames_pred + fnames_pred_temp
 
-    assert len(fnames_gt) == len(fnames_pred)
+    assert len(fnames_gt) != 0,f'ground truth files count == 0, check truth_dir {truth_dir}'
+    assert len(fnames_gt) == len(fnames_pred), 'ground truth files count != predicted files count'
+
     return sorted(fnames_gt), sorted(fnames_pred)
 
 
@@ -404,8 +406,8 @@ def main(submit_dir, truth_dir, output_filename):
     jp_pred, jp_gt, mats_pred, mats_gt = get_data(fnames_gt, fnames_pred, truth_dir)
 
     # Check if the predicted and GT joints have the same number
-    assert jp_pred.shape == jp_gt.shape
-    assert mats_pred.shape[0] == mats_gt.shape[0]
+    assert jp_pred.shape == jp_gt.shape,'predicted joints shape != gt joints shape'
+    assert mats_pred.shape[0] == mats_gt.shape[0],'predicted orientation matrix shape != gt orientation matrix shape'
 
     # If there are submitted joint predictions
     if not jp_pred.shape == (0,):
@@ -480,6 +482,9 @@ if __name__ == "__main__":
     # Process reference and results directory
     submit_dir = os.path.join(input_dir, 'res')
     truth_dir = os.path.join(input_dir, 'ref')
+    
+    assert os.path.isdir(submit_dir),f'submit_dir {submit_dir} invalid'
+    assert os.path.isdir(truth_dir), f'truth_dir {truth_dir} invalid'
 
     # Make output directory
     if not os.path.exists(output_dir):
