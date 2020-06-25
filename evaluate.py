@@ -22,7 +22,7 @@ SMPL_OR_JOINTS = np.array([0, 1, 2, 4, 5, 16, 17, 18, 19])
 def joint_angle_error(pred_mat, gt_mat):
     """
     Compute the geodesic distance between the two input matrices.
-    :param pred_mat: predicted rotation matrices. Shape: ( Seq, 9g, 3, 3)
+    :param pred_mat: predicted rotation matrices. Shape: ( Seq, 9, 3, 3)
     :param gt_mat: ground truth rotation matrices. Shape: ( Seq, 24, 3, 3)
     :return: Mean geodesic distance between input matrices.
     """
@@ -391,7 +391,7 @@ def get_paths(submit_dir, truth_dir):
     return sorted(fnames_gt), sorted(fnames_pred)
 
 
-def main(submit_dir, truth_dir, output_filename):
+def main(submit_dir, truth_dir, output_filename=None):
     """
     :param submit_dir: The location of the submission files
     :param truth_dir: The location of the GT files
@@ -467,10 +467,12 @@ def main(submit_dir, truth_dir, output_filename):
     for err in errs.keys():
         if not errs[err] == np.inf:
             str = str + err + ': {}\n'.format(errs[err])
-
-    with open(output_filename, 'w') as f:
-        f.write(str)
-    f.close()
+    if output_filename is None:
+        print(str)
+    else:
+        with open(output_filename, 'w') as f:
+            f.write(str)
+        f.close()
 
 
 if __name__ == "__main__":
@@ -487,7 +489,7 @@ if __name__ == "__main__":
     assert os.path.isdir(truth_dir), f'truth_dir {truth_dir} invalid'
 
     # Make output directory
-    if not os.path.exists(output_dir):
+    if not os.path.isdir(output_dir):
         os.makedirs(output_dir)
     output_filename = os.path.join(output_dir, 'scores.txt')
 
