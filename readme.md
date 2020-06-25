@@ -16,7 +16,13 @@ Please place your estimated 3D Pose in the directory `./input_dir/res`. Please e
 ### Evaluation
 Execute the evaluation script using 
 
-`python evaluate.py ./input_dir ./output_dir`
+```
+conda activate 3dpw_eval
+
+python evaluate.py ./input_dir ./output_dir
+```
+
+Metrics results will be written to `./output_dir/scores.txt`
 
 ### Metrics
 Evaluation Criteria
