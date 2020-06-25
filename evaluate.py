@@ -22,7 +22,7 @@ SMPL_OR_JOINTS = np.array([0, 1, 2, 4, 5, 16, 17, 18, 19])
 def joint_angle_error(pred_mat, gt_mat):
     """
     Compute the geodesic distance between the two input matrices.
-    :param pred_mat: predicted rotation matrices. Shape: ( Seq, 9g, 3, 3)
+    :param pred_mat: predicted rotation matrices. Shape: ( Seq, 9, 3, 3)
     :param gt_mat: ground truth rotation matrices. Shape: ( Seq, 24, 3, 3)
     :return: Mean geodesic distance between input matrices.
     """
@@ -385,11 +385,13 @@ def get_paths(submit_dir, truth_dir):
         fnames_gt = fnames_gt + fnames_gt_temp
         fnames_pred = fnames_pred + fnames_pred_temp
 
-    assert len(fnames_gt) == len(fnames_pred)
+    assert len(fnames_gt) != 0,f'ground truth files count == 0, check truth_dir {truth_dir}'
+    assert len(fnames_gt) == len(fnames_pred), 'ground truth files count != predicted files count'
+
     return sorted(fnames_gt), sorted(fnames_pred)
 
 
-def main(submit_dir, truth_dir, output_filename):
+def main(submit_dir, truth_dir, output_filename=None):
     """
     :param submit_dir: The location of the submission files
     :param truth_dir: The location of the GT files
@@ -404,8 +406,8 @@ def main(submit_dir, truth_dir, output_filename):
     jp_pred, jp_gt, mats_pred, mats_gt = get_data(fnames_gt, fnames_pred, truth_dir)
 
     # Check if the predicted and GT joints have the same number
-    assert jp_pred.shape == jp_gt.shape
-    assert mats_pred.shape[0] == mats_gt.shape[0]
+    assert jp_pred.shape == jp_gt.shape,'predicted joints shape != gt joints shape'
+    assert mats_pred.shape[0] == mats_gt.shape[0],'predicted orientation matrix shape != gt orientation matrix shape'
 
     # If there are submitted joint predictions
     if not jp_pred.shape == (0,):
@@ -465,10 +467,12 @@ def main(submit_dir, truth_dir, output_filename):
     for err in errs.keys():
         if not errs[err] == np.inf:
             str = str + err + ': {}\n'.format(errs[err])
-
-    with open(output_filename, 'w') as f:
-        f.write(str)
-    f.close()
+    if output_filename is None:
+        print(str)
+    else:
+        with open(output_filename, 'w') as f:
+            f.write(str)
+        f.close()
 
 
 if __name__ == "__main__":
@@ -480,9 +484,12 @@ if __name__ == "__main__":
     # Process reference and results directory
     submit_dir = os.path.join(input_dir, 'res')
     truth_dir = os.path.join(input_dir, 'ref')
+    
+    assert os.path.isdir(submit_dir),f'submit_dir {submit_dir} invalid'
+    assert os.path.isdir(truth_dir), f'truth_dir {truth_dir} invalid'
 
     # Make output directory
-    if not os.path.exists(output_dir):
+    if not os.path.isdir(output_dir):
         os.makedirs(output_dir)
     output_filename = os.path.join(output_dir, 'scores.txt')
 
